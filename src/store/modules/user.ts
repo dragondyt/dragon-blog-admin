@@ -9,9 +9,10 @@ export const useUserStore = defineStore({
     id: 'app-user',
     state: (): UserState => ({
         // user info
-        userInfo: null,
+        userInfo: {},
         // token
         token: '',
+        language: 'en',
         // roleList
         roleList: [],
         // Whether the login expired
@@ -30,6 +31,7 @@ export const useUserStore = defineStore({
         },
         async loginIn(loginInfo: ModelType) {
             const user = await login(loginInfo)
+            console.log(user)
             this.setUserInfo(user.userInfo)
             this.setToken(user.token)
             const routerStore = useRouterStore()

@@ -1,8 +1,8 @@
 <template>
   <div class="w-[420px] p-6">
     <n-form ref="formRef" :model="model" :rules="rules">
-      <n-form-item path="age" label="用户名">
-        <n-input v-model:value="model.age" @keyup.enter="submitForm"/>
+      <n-form-item path="username" label="用户名">
+        <n-input v-model:value="model.username" @keyup.enter="submitForm"/>
       </n-form-item>
       <n-form-item path="password" label="密码">
         <n-input
@@ -24,25 +24,15 @@ import {FormInst, FormItemRule, FormRules, useMessage} from "naive-ui";
 import {useUserStore} from "@/store/modules/user";
 import {ModelType} from "@/types";
 const model = ref<ModelType>({
-  age: null,
+  username: null,
   password: null,
-  reenteredPassword: null
 })
 
 const rules: FormRules = {
   age: [
     {
       required: true,
-      validator(rule: FormItemRule, value: string) {
-        if (!value) {
-          return new Error('需要年龄')
-        } else if (!/^\d*$/.test(value)) {
-          return new Error('年龄应该为整数')
-        } else if (Number(value) < 18) {
-          return new Error('年龄应该超过十八岁')
-        }
-        return true
-      },
+      message:"请输入用户名",
       trigger: ['input', 'blur']
     }
   ],

@@ -6,14 +6,20 @@ export interface UserState {
     roleList: any;
     sessionTimeout?: boolean;
     lastUpdateTime: number;
+
+    [key: string]: any
 }
+
+export type Menu = RouteRecordRaw
 
 export interface ModelType {
-    age: string | null
+    username: string | null
     password: string | null
-    reenteredPassword: string | null
 }
 
-export interface RouterState{
+export interface RouterState {
     asyncRouters: Array<RouteRecordRaw>
+    routeMap: ({})
+    routerList: any
+    keepAliveRouters: any
 }

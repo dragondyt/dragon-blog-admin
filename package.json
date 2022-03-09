@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "axios": "^0.20.0-0",
+    "mitt": "^3.0.0",
     "naive-ui": "^2.26.0",
     "pinia": "^2.0.0-rc.10",
     "vfonts": "^0.0.3",

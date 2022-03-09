@@ -5,7 +5,7 @@ import {UserState} from "@/types";
 
 export const login = (data: RequestParams) => {
     return service<UserState>({
-        url: '/user/v1/login',
+        url: '/v1/users/login',
         method: 'post',
         data: data
     })
