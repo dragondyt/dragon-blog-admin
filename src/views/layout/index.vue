@@ -25,6 +25,6 @@ const fixedMenu = computed(() => {
   const { fixed } = settingStore;
   return fixed ? 'absolute' : 'static';
 });
-const keepAliveComponents = []
+const keepAliveComponents:Array<string> = []
 
 </script>
