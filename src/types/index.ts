@@ -10,7 +10,9 @@ export interface UserState {
     [key: string]: any
 }
 
-export type Menu = RouteRecordRaw
+export type Menu = RouteRecordRaw & {
+    component: string
+}
 
 export interface ModelType {
     username: string | null
@@ -22,4 +24,7 @@ export interface RouterState {
     routeMap: ({})
     routerList: any
     keepAliveRouters: any
+}
+export interface SettingState {
+    fixed: boolean
 }

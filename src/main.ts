@@ -7,6 +7,7 @@ import 'vfonts/Lato.css';
 // 等宽字体
 import 'vfonts/FiraCode.css';
 import router from "@/router";
+import './permission'
 import {
     // create naive ui
     create,
@@ -15,12 +16,15 @@ import {
     NForm,
     NFormItem,
     NInput,
+    NIcon,
     NMessageProvider,
+    NLayout,
+    NLayoutSider, NMenu,
 } from 'naive-ui'
 import {setupStore} from "@/store";
 
 const naive = create({
-    components: [NButton, NForm, NFormItem, NInput, NMessageProvider]
+    components: [NButton, NForm, NFormItem, NInput, NMessageProvider,NIcon,NLayout, NLayoutSider,NMenu]
 })
 const app = createApp(App);
 setupStore(app)

@@ -1,9 +1,10 @@
 import {defineStore} from "pinia";
 import {store} from "@/store";
 import {ModelType, UserState} from "@/types";
-import {login} from "@/api/models/user";
+import {getUserInfo, login} from "@/api/models/user";
 import {useRouterStore} from "@/store/modules/router";
 import router from '@/router'
+import {ref} from "vue";
 
 export const useUserStore = defineStore({
     id: 'app-user',
@@ -11,7 +12,7 @@ export const useUserStore = defineStore({
         // user info
         userInfo: {},
         // token
-        token: '',
+        token: window.localStorage.getItem('token') || '',
         language: 'en',
         // roleList
         roleList: [],
@@ -26,12 +27,19 @@ export const useUserStore = defineStore({
             this.userInfo = val
         },
 
+        async getUserInfo() {
+            const userInfo = await getUserInfo()
+            this.setUserInfo(userInfo)
+            return userInfo
+        },
+
         setToken(val: string) {
             this.token = val
+            window.localStorage.setItem('token', val)
         },
+
         async loginIn(loginInfo: ModelType) {
             const user = await login(loginInfo)
-            console.log(user)
             this.setUserInfo(user.userInfo)
             this.setToken(user.token)
             const routerStore = useRouterStore()
@@ -41,7 +49,6 @@ export const useUserStore = defineStore({
                 router.addRoute(asyncRouter)
             })
             router.push({name: 'dashboard'})
-            return true
         }
     }
 })
