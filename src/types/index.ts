@@ -27,4 +27,8 @@ export interface RouterState {
 }
 export interface SettingState {
     fixed: boolean
+    menuSetting: any
+    navTheme: any
+    navMode: any
+    fixedHeader: any
 }

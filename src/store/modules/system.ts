@@ -6,7 +6,15 @@ import {store} from "@/store";
 export const useSettingStore = defineStore({
     id: 'app-setting',
     state: (): SettingState => ({
-        fixed: false
+        fixed: false,
+        menuSetting: {
+
+        },
+        navTheme: {
+
+        },
+        navMode:'',
+        fixedHeader: true
     }),
     actions: {}
 })

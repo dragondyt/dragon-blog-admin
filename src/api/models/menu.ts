@@ -7,3 +7,9 @@ export const asyncMenu = () => {
         method: 'get'
     })
 }
+export const getMenuList = () => {
+    return service<Array<Menu>>({
+        url: '/v1/menus',
+        method: 'get'
+    })
+}

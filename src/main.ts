@@ -19,12 +19,26 @@ import {
     NIcon,
     NMessageProvider,
     NLayout,
-    NLayoutSider, NMenu,
+    NLayoutSider,
+    NMenu,
+    NLayoutHeader,
+    NLayoutContent,
+    NBackTop,
+    NCard,
+    NGrid,
+    NGi,
+    NTree,
+    NRadioGroup,
+    NRadio,
+    NAlert,
+    NSpin, NSpace, NDropdown,
 } from 'naive-ui'
 import {setupStore} from "@/store";
 
 const naive = create({
-    components: [NButton, NForm, NFormItem, NInput, NMessageProvider,NIcon,NLayout, NLayoutSider,NMenu]
+    components: [NButton, NForm, NFormItem, NInput, NMessageProvider, NIcon,
+        NLayout, NLayoutSider, NLayoutHeader, NLayoutContent, NBackTop,
+        NMenu, NCard, NGrid, NGi, NTree, NRadioGroup, NRadio, NAlert, NSpin, NSpace, NDropdown]
 })
 const app = createApp(App);
 setupStore(app)
