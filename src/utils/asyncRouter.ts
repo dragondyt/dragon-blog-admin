@@ -1,4 +1,7 @@
 import {RouteRecordRaw} from "vue-router";
+import { DashboardOutlined } from '@vicons/antd';
+import {NIcon} from "naive-ui";
+import {h, VNode} from "vue";
 
 const modules = import.meta.glob('../views/**/*.vue')
 
@@ -28,3 +31,15 @@ function dynamicImport(
 
     return dynamicViewsModules[matchKey]
 }
+
+/**
+ * render 图标
+ * */
+export function renderIcon(icon:any) {
+    return () => h(NIcon, null, { default: () => h(icon) });
+}
+
+//前端路由图标映射表
+export const constantRouterIcon = {
+    DashboardOutlined: renderIcon(DashboardOutlined),
+};

@@ -15,8 +15,8 @@
 </template>
 
 <script lang="ts" setup>
-import {MenuOption, NIcon, NMenu} from 'naive-ui'
-import {Component, computed, h, onMounted, reactive, ref, unref} from "vue";
+import {NMenu} from 'naive-ui'
+import {computed, onMounted, reactive, ref, unref, watch} from "vue";
 import {useSettingStore} from "@/store/modules/system";
 import {useRoute, useRouter} from "vue-router";
 import {useRouterStore} from "@/store/modules/router";
@@ -29,100 +29,16 @@ const props = withDefaults(defineProps<{
   mode: 'vertical',
   location: 'left'
 });
-defineEmits<{
-  (e: 'update:collapsed', num: number): void
+const emit = defineEmits<{
+  (e: 'update:collapsed', collapsed: boolean): void
 }>()
-import {
-  BookOutline as BookIcon,
-  PersonOutline as PersonIcon,
-  WineOutline as WineIcon
-} from '@vicons/ionicons5'
-
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, {default: () => h(icon)})
-}
-
-const menus: MenuOption[] = [
-  {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing',
-    icon: renderIcon(BookIcon)
-  },
-  {
-    label: '1973年的弹珠玩具',
-    key: 'pinball-1973',
-    icon: renderIcon(BookIcon),
-    disabled: true,
-    children: [
-      {
-        label: '鼠',
-        key: 'rat'
-      }
-    ]
-  },
-  {
-    label: '寻羊冒险记',
-    key: 'a-wild-sheep-chase',
-    icon: renderIcon(BookIcon),
-    disabled: true
-  },
-  {
-    label: '舞，舞，舞',
-    key: 'dance-dance-dance',
-    icon: renderIcon(BookIcon),
-    children: [
-      {
-        type: 'group',
-        label: '人物',
-        key: 'people',
-        children: [
-          {
-            label: '叙事者',
-            key: 'narrator',
-            icon: renderIcon(PersonIcon)
-          },
-          {
-            label: '羊男',
-            key: 'sheep-man',
-            icon: renderIcon(PersonIcon)
-          }
-        ]
-      },
-      {
-        label: '饮品',
-        key: 'beverage',
-        icon: renderIcon(WineIcon),
-        children: [
-          {
-            label: '威士忌',
-            key: 'whisky'
-          }
-        ]
-      },
-      {
-        label: '食物',
-        key: 'food',
-        children: [
-          {
-            label: '三明治',
-            key: 'sandwich'
-          }
-        ]
-      },
-      {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes'
-      }
-    ]
-  }
-]
+const menus = useRouterStore().routerList
 const headerMenuSelectKey = ref();
 const currentRoute = useRoute();
 const router = useRouter();
 const selectedKeys = ref<string>(currentRoute.name as string);
 const matched = currentRoute.matched;
-const getOpenKeys = matched && matched.length ? matched.map((item) => item.name) : [];
-const openKeys = reactive([])
+const openKeys = ref()
 const inverted = computed(() => {
   return ['dark', 'header-dark'].includes(useSettingStore().navTheme);
 });
@@ -133,6 +49,28 @@ const getSelectedKeys = computed(() => {
       ? unref(selectedKeys)
       : unref(headerMenuSelectKey);
 });
+
+// 监听分割菜单
+watch(
+    () => useSettingStore().menuSetting.mixMenu,
+    () => {
+      updateMenu();
+      if (props.collapsed) {
+        emit('update:collapsed', !props.collapsed);
+      }
+    }
+);
+
+watch(
+    () => currentRoute.fullPath,
+    () => {
+      updateMenu();
+      const matched = currentRoute.matched;
+      openKeys.value = matched.map((item) => item.name);
+      const activeMenu: string = (currentRoute.meta?.activeMenu as string) || '';
+      selectedKeys.value = activeMenu ? (activeMenu as string) : (currentRoute.name as string);
+    }
+);
 
 function updateMenu() {
 
@@ -147,9 +85,25 @@ function clickMenuItem(key: string) {
 }
 
 //展开菜单
-function menuExpanded(openKeys: string[]) {
-
+function menuExpanded(data: string[]) {
+  if (!data) return;
+  const latestOpenKey = data.find((key) => data.indexOf(key) === -1);
+  const isExistChildren = findChildrenLen(latestOpenKey as string);
+  openKeys.value = isExistChildren ? (latestOpenKey ? [latestOpenKey] : []) : data;
 }
+
+//查找是否存在子路由
+function findChildrenLen(key: string) {
+  if (!key) return false;
+  const subRouteChildren: string[] = [];
+  for (const {children, key} of unref(menus)) {
+    if (children && children.length) {
+      subRouteChildren.push(key as string);
+    }
+  }
+  return subRouteChildren.includes(key);
+}
+
 
 onMounted(() => {
   updateMenu();

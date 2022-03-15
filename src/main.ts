@@ -31,18 +31,29 @@ import {
     NRadioGroup,
     NRadio,
     NAlert,
-    NSpin, NSpace, NDropdown,
+    NSpin, NSpace, NDropdown, NBreadcrumb, NBreadcrumbItem, NTooltip, NAvatar,
 } from 'naive-ui'
 import {setupStore} from "@/store";
+
+import Prism from 'prismjs';
+import VueMarkdownEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import vuepressTheme from '@kangc/v-md-editor/lib/theme/vuepress.js';
+import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
+
+VueMarkdownEditor.use(vuepressTheme, {
+    Prism,
+});
 
 const naive = create({
     components: [NButton, NForm, NFormItem, NInput, NMessageProvider, NIcon,
         NLayout, NLayoutSider, NLayoutHeader, NLayoutContent, NBackTop,
-        NMenu, NCard, NGrid, NGi, NTree, NRadioGroup, NRadio, NAlert, NSpin, NSpace, NDropdown]
+        NMenu, NCard, NGrid, NGi, NTree, NRadioGroup, NRadio, NAlert, NSpin, NSpace, NDropdown, NBreadcrumb, NBreadcrumbItem, NTooltip, NAvatar]
 })
 const app = createApp(App);
 setupStore(app)
 app
+    .use(VueMarkdownEditor)
     .use(naive)
     .use(router)
     .mount("#app");

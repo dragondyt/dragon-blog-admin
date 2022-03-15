@@ -1,4 +1,5 @@
 import {RouteLocationRaw, RouteRecordRaw} from "vue-router";
+import {MenuOption} from "naive-ui";
 
 export interface UserState {
     userInfo: any;
@@ -22,7 +23,7 @@ export interface ModelType {
 export interface RouterState {
     asyncRouters: Array<RouteRecordRaw>
     routeMap: ({})
-    routerList: any
+    routerList: Array<MenuOption>
     keepAliveRouters: any
 }
 export interface SettingState {
@@ -31,4 +32,9 @@ export interface SettingState {
     navTheme: any
     navMode: any
     fixedHeader: any
+    headerSetting: any
+    crumbsSetting: any
+    isPageAnimate: any
+    pageAnimateType: any
+    multiTabsSetting: any
 }

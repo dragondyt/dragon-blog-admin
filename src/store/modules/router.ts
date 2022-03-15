@@ -3,15 +3,22 @@ import {store} from "@/store";
 import {RouterState} from "@/types";
 import {RouteRecordRaw} from "vue-router";
 import {asyncMenu} from "@/api/models/menu";
-import {asyncRouterHandle} from "@/utils/asyncRouter";
+import {asyncRouterHandle, constantRouterIcon, renderIcon} from "@/utils/asyncRouter";
 
 const routerListArr: any = []
 const keepAliveRoutersArr: any = []
-
+import * as icons from '@vicons/antd';
 const formatRouter = (routes: Array<RouteRecordRaw>, routeMap: any) => {
     routes && routes.forEach((item: any) => {
+        const isRoot = item.meta?.alwaysShow != true && item.children?.length === 1;
+        const info = isRoot ? item.children[0] : item;
         if ((!item.children || item.children.every((ch: any) => ch.hidden)) && item.name !== '404' && !item.hidden) {
-            routerListArr.push({label: item.meta.title, value: item.name})
+            routerListArr.push({
+                label: item.meta.title,
+                value: item.name,
+                key: item.path,
+                icon: renderIcon(icons['DashboardOutlined'])
+            })
         }
         item.meta.btns = item.btns
         item.meta.hidden = item.hidden
