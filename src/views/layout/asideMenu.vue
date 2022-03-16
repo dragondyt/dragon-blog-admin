@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import {NMenu} from 'naive-ui'
+import {MenuOption, NMenu} from 'naive-ui'
 import {computed, onMounted, reactive, ref, unref, watch} from "vue";
 import {useSettingStore} from "@/store/modules/system";
 import {useRoute, useRouter} from "vue-router";
@@ -32,7 +32,9 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'update:collapsed', collapsed: boolean): void
 }>()
-const menus = useRouterStore().routerList
+const routerStore = useRouterStore();
+// @ts-ignore
+const menus: MenuOption[] = routerStore.routerList
 const headerMenuSelectKey = ref();
 const currentRoute = useRoute();
 const router = useRouter();

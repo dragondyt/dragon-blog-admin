@@ -23,7 +23,7 @@ export interface ModelType {
 export interface RouterState {
     asyncRouters: Array<RouteRecordRaw>
     routeMap: ({})
-    routerList: Array<MenuOption>
+    routerList: MenuOption[]
     keepAliveRouters: any
 }
 export interface SettingState {

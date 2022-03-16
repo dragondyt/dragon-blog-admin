@@ -70,20 +70,6 @@
       </n-breadcrumb>
     </div>
     <div class="flex items-center mr-[20px]">
-      <div
-          class="w-auto py-0 px-3 inline-block text-center cursor-pointer transition-all"
-          v-for="item in iconList"
-          :key="item.icon.name"
-      >
-        <n-tooltip placement="bottom">
-          <template #trigger>
-            <n-icon size="18">
-              <component :is="item.icon" v-on="item.eventObject || {}"/>
-            </n-icon>
-          </template>
-          <span>{{ item.tips }}</span>
-        </n-tooltip>
-      </div>
       <!--切换全屏-->
       <div class="w-auto py-0 px-3 inline-block text-center cursor-pointer transition-all">
         <n-tooltip placement="bottom">
@@ -173,24 +159,6 @@ const generator: any = (routerMap: any) => {
 const breadcrumbList = computed(() => {
   return generator(route.matched);
 });
-// 图标列表
-const iconList = [
-  {
-    icon: 'SearchOutlined',
-    tips: '搜索',
-    eventObject: {
-      click: () => {
-      },
-    },
-  },
-  {
-    icon: 'GithubOutlined',
-    tips: 'github',
-    eventObject: {
-      click: () => window.open('https://github.com/jekip/naive-ui-admin'),
-    },
-  },
-];
 const avatarOptions = [
   {
     label: '个人设置',

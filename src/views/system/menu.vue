@@ -126,18 +126,32 @@
 
 <script lang="ts" setup>
 import {DownOutlined, AlignLeftOutlined, SearchOutlined, FormOutlined} from '@vicons/antd';
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, PropType, reactive, ref} from "vue";
 import {getMenuList} from "@/api/models/menu";
+import {FormRules} from "naive-ui/lib/form/src/interface";
+import {Key, TreeOptions} from "naive-ui/lib/tree/src/interface";
 
-const expandedKeys = []
-const treeData = ref([])
-const rules = []
-const pattern = ''
+const expandedKeys: PropType<Key[]> = []
+const treeData = ref<PropType<TreeOptions>>([])
+const rules: PropType<FormRules> = []
+const pattern: string = ''
 const loading = ref(true)
 const subLoading = false
 const isEditMenu = false
-const treeItemTitle = ''
-const formParams = {}
+const treeItemTitle = '';
+
+export interface FromParams {
+  type: number
+  label: string
+  subtitle: string
+  path: string
+  openType: number
+  auth: string
+}
+
+const formParams = reactive<FromParams>({
+  auth: "", label: "", openType: 0, path: "", subtitle: "", type: 0
+})
 let treeItemKey = ref([]);
 
 const isAddSon = computed(() => {
