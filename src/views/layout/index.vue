@@ -21,15 +21,15 @@
       <n-layout-header :inverted="getHeaderInverted" :position="fixedHeader">
         <Header v-model:collapsed="collapsed" :inverted="inverted"/>
       </n-layout-header>
-      <n-layout-content class="flex min-h-screen" :style="{ 'background: #f5f7f9': getDarkTheme === false }"
+      <n-layout-content class="flex min-h-screen" style="background: #f5f7f9"
       >
         <div class="px-[10px] pb-[10px] relative pt-16"
-             :style="{
+             :class="{
         'pt-16': fixedMulti,
         'pt-0': fixedHeader === 'static',
         }">
           <TabsView v-if="isMultiTabs" v-model:collapsed="collapsed"/>
-          <div :style="{
+          <div :class="{
               'pt-[44px]': fixedMulti,
               'pt-0': !isMultiTabs,
               'mt-3': !isMultiTabs,
