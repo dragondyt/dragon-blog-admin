@@ -1,4 +1,4 @@
-import {RouteLocationRaw, RouteRecordRaw} from "vue-router";
+import {RouteLocationNormalized, RouteLocationRaw, RouteRecordRaw} from "vue-router";
 import {MenuOption} from "naive-ui";
 
 export interface UserState {
@@ -26,6 +26,7 @@ export interface RouterState {
     routerList: MenuOption[]
     keepAliveRouters: any
 }
+
 export interface SettingState {
     fixed: boolean
     menuSetting: any
@@ -38,3 +39,16 @@ export interface SettingState {
     pageAnimateType: any
     multiTabsSetting: any
 }
+
+export interface AppState {
+    tabsList: Array<any>
+}
+
+export type RouteItem = Partial<RouteLocationNormalized> & {
+    fullPath: string;
+    name: any;
+};
+
+export type ITabsViewState = {
+    tabsList: RouteItem[]; // 标签页
+};
