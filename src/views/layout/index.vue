@@ -21,7 +21,7 @@
       <n-layout-header :inverted="getHeaderInverted" :position="fixedHeader">
         <Header v-model:collapsed="collapsed" :inverted="inverted"/>
       </n-layout-header>
-      <n-layout-content class="flex min-h-screen" style="background: #f5f7f9"
+      <n-layout-content class="flex-grow flex-shrink basis-auto max-h-screen" style="background: #f5f7f9"
       >
         <div class="px-[10px] pb-[10px] relative pt-16"
              :class="{
