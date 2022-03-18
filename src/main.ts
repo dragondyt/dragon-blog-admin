@@ -31,7 +31,7 @@ import {
     NRadioGroup,
     NRadio,
     NAlert,
-    NSpin, NSpace, NDropdown, NBreadcrumb, NBreadcrumbItem, NTooltip, NAvatar,
+    NSpin, NSpace, NDropdown, NBreadcrumb, NBreadcrumbItem, NTooltip, NAvatar, NModal, NDynamicTags, NCheckbox,
 } from 'naive-ui'
 import {setupStore} from "@/store";
 
@@ -51,7 +51,7 @@ VueMarkdownEditor.use(vuepressTheme, {
 const naive = create({
     components: [NButton, NForm, NFormItem, NInput, NMessageProvider, NIcon,
         NLayout, NLayoutSider, NLayoutHeader, NLayoutContent, NBackTop,
-        NMenu, NCard, NGrid, NGi, NTree, NRadioGroup, NRadio, NAlert, NSpin, NSpace, NDropdown, NBreadcrumb, NBreadcrumbItem, NTooltip, NAvatar]
+        NMenu, NCard, NGrid, NGi, NTree, NRadioGroup, NRadio, NAlert, NSpin, NSpace,NCheckbox, NDropdown, NBreadcrumb, NModal,NDynamicTags, NBreadcrumbItem, NTooltip, NAvatar]
 })
 const app = createApp(App);
 setupStore(app)
