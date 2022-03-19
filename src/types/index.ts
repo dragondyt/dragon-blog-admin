@@ -60,4 +60,5 @@ export interface Post {
     sticky: boolean
     description?: string
     content?: string
+    createdDateTime?: string
 }

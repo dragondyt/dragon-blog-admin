@@ -1,92 +1,145 @@
 <template>
-  <n-space vertical>
-    <v-md-editor v-model="model.content" @save="showModal=!showModal" @change="change" height="600px"></v-md-editor>
-    <n-modal v-model:show="showModal"
-             :mask-closable="false">
-      <n-card
-          style="width: 600px"
-          title="保存文章"
-          :bordered="false"
-          size="huge"
-          role="dialog"
-          aria-modal="true"
-      >
-        <n-form ref="formRef" :model="model" :rules="rules">
-          <n-form-item path="title" label="标题">
-            <n-input v-model:value="model.title" placeholder="请输入文章标题" @keydown.enter.prevent/>
-          </n-form-item>
-          <n-form-item path="tags" label="标签">
-            <n-dynamic-tags v-model:value="model.tags"/>
-          </n-form-item>
-          <n-input
-              v-model:value="model.description"
-              type="textarea"
-              placeholder="基本的 Textarea"
-          />
-          <n-form-item path="sticky" :show-label="false">
-            <n-checkbox v-model:checked="model.sticky">
-              置顶
-            </n-checkbox>
-          </n-form-item>
-          <n-space justify="end">
-            <n-button @click="showModal=false">取消</n-button>
-            <n-button @click="save" type="success" dashed>
-              保存
-            </n-button>
-          </n-space>
-        </n-form>
-      </n-card>
-    </n-modal>
-  </n-space>
+  <n-data-table
+      remote
+      ref="table"
+      :columns="columns"
+      :data="data"
+      :loading="loading"
+      :pagination="pagination"
+      :row-key="rowKey"
+      @update:sorter="handleSorterChange"
+      @update:filters="handleFiltersChange"
+      @update:page="handlePageChange"
+  />
 </template>
+
 <script lang="ts" setup>
-import {ref} from "vue";
-import {saveArticle} from "@/api/models/article";
+import {h, onMounted, reactive, ref} from "vue";
 import {Post} from "@/types";
-import * as CRC32 from 'crc-32'
-import {FormInst, FormRules, useMessage} from "naive-ui";
+import {delArticle, getPage} from "@/api/models/article";
+import {NButton, NSpace, NTag, NTime, useDialog} from "naive-ui";
+import {useRouter} from "vue-router";
 
-const formRef = ref<FormInst | null>()
-const message = useMessage()
+export interface Columns {
 
-const showModal = ref(false)
-const loading = ref(false)
-const model = ref<Post>({
-  sticky: false,
-  title: ''
+}
+
+const router = useRouter();
+const pagination = reactive({
+  page: 1,
+  pageCount: 1,
+  pageSize: 10,
+  prefix({itemCount}) {
+    return `总数量： ${itemCount}.`
+  }
 })
 
-const rules: FormRules = {
-  title: [
-    {
-      required: true,
-      message: '请输入标题'
+function deleteArticle(id: string | undefined) {
+  delArticle(id).then(() => {
+    getPage({}).then(d => {
+      data.value = d.content
+      pagination.page = d.size
+      pagination.pageSize = d.totalElements
+      pagination.pageCount = d.totalPages
+    })
+  })
+  console.log("删除")
+}
+
+function editArticle(id: string | undefined) {
+  router.push({name: 'addArticle', params: {id}})
+}
+
+function previewArticle(id: string | undefined) {
+
+}
+
+const columns: Array<Columns> = [
+  {
+    title: 'ID',
+    key: 'id',
+    sorter: true,
+    sortOrder: false
+  }, {
+    title: '标题',
+    key: 'title',
+  },
+  {
+    title: '标签',
+    key: 'tags',
+    render(row: Post) {
+      if (row.tags === undefined) {
+        return h('span')
+      }
+      return row.tags.map((tagKey: string) => {
+        return h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px'
+              },
+              type: 'info'
+            },
+            {
+              default: () => tagKey
+            }
+        )
+      })
     }
-  ],
-}
-
-function change(text: string, html: string) {
-  console.debug("改变")
-}
-
-function save() {
-  formRef.value?.validate((errors => {
-    if (!errors) {
-      loading.value = true
-      model.value.id = (CRC32.str(model.value.title) >>> 0).toString(16)
-      saveArticle(model.value)
-          .then(() => {
-            showModal.value = false
-            message.success('成功')
-          })
-          .catch(() => {
-            message.error('失败')
-          })
-    } else {
-      message.error('失败')
-      console.log('errors', errors)
+  },
+  {
+    title: '创建时间',
+    key: 'createdDateTime',
+    render(row: Post) {
+      return h(NTime, {
+        time: new Date(row.createdDateTime as string)
+      })
     }
-  }))
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render(row: Post) {
+      return h(NSpace, {}, [
+        h(NButton, {
+          textColor: 'black',
+          onClick: () => previewArticle(row.id)
+        }, {
+          default: () => '预览'
+        }),
+        h(NButton, {
+          type: 'success',
+          textColor: 'black',
+          onClick: () => editArticle(row.id)
+        }, {
+          default: () => '编辑'
+        }),
+        h(NButton, {
+          type: 'error',
+          textColor: 'black',
+          onClick: () => deleteArticle(row.id)
+        }, {
+          default: () => '删除'
+        }),
 
+
+      ])
+    }
+  }
+]
+const data = ref<Array<Post>>([])
+const loading = ref(false)
+
+function rowKey(rowData: any) {
+  return rowData.title
 }
+
+onMounted(() => {
+  getPage({}).then(d => {
+    data.value = d.content
+    pagination.page = d.size
+    pagination.pageSize = d.totalElements
+    pagination.pageCount = d.totalPages
+  })
+})
 </script>
