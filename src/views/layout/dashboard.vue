@@ -1,11 +1,8 @@
 <template>
-  <div>
+  <n-space vertical>
     <v-md-editor v-model="model.content" @save="showModal=!showModal" @change="change" height="600px"></v-md-editor>
     <n-modal v-model:show="showModal"
-             positive-text="保存"
-             negative-text="取消"
-             @positive-click="onPositiveClick"
-             @negative-click="onNegativeClick">
+             :mask-closable="false">
       <n-card
           style="width: 600px"
           title="保存文章"
@@ -26,35 +23,41 @@
               置顶
             </n-checkbox>
           </n-form-item>
+          <n-space justify="end">
+            <n-button @click="showModal=false">取消</n-button>
+            <n-button @click="save" type="success" dashed>
+              保存
+            </n-button>
+          </n-space>
         </n-form>
       </n-card>
     </n-modal>
-  </div>
+  </n-space>
 </template>
 <script lang="ts" setup>
 import {ref} from "vue";
-
-export interface Post {
-  title?: string
-  tags?: string[]
-  sticky: boolean
-}
+import {saveArticle} from "@/api/models/article";
+import {Post} from "@/types";
+import * as CRC32 from 'crc-32'
 
 const showModal = ref(false)
-const text = ref('')
+const loading = ref(false)
 const model = ref<Post>({
-  sticky: false
+  sticky: false,
+  title: ''
 })
-
-function onPositiveClick() {
-
-}
-
-function onNegativeClick() {
-
-}
 
 function change(text: string, html: string) {
   console.debug("改变")
+}
+
+function save() {
+  loading.value = true
+  model.value.id = (CRC32.str(model.value.title) >>> 0).toString(16)
+  saveArticle(model.value)
+      .then(() => {
+        showModal.value = false
+      })
+      .catch(() => loading.value = false)
 }
 </script>

@@ -52,3 +52,11 @@ export type RouteItem = Partial<RouteLocationNormalized> & {
 export type ITabsViewState = {
     tabsList: RouteItem[]; // 标签页
 };
+
+export interface Post {
+    id?: string
+    title: string
+    tags?: string[]
+    sticky: boolean
+    content?: string
+}
