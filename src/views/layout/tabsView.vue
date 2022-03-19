@@ -93,12 +93,13 @@ import {
 } from '@vicons/antd';
 
 import Draggable from 'vuedraggable'
-import {computed, ref, unref} from "vue";
+import {computed, reactive, ref, unref} from "vue";
 import {RouteLocationNormalizedLoaded, useRoute, useRouter} from "vue-router";
 import {useAppStore} from "@/store/modules/app";
 import {RouteItem} from "@/types";
 import {renderIcon} from "@/utils/asyncRouter";
 import Cookies from 'js-cookie'
+import {useMessage} from "naive-ui";
 
 const props = defineProps<{
   collapsed: boolean
@@ -167,7 +168,7 @@ cacheRoutes.forEach((cacheRoute) => {
 // 初始化标签页
 appStore.initTabs(cacheRoutes);
 // 标签页列表
-const tabsList: any = computed(() => appStore.tabsList);
+const tabsList = computed(() => appStore.tabsList);
 //tags 右侧下拉菜单
 const TabsMenuOptions = computed(() => {
   const isDisabled = unref(tabsList).length <= 1;
@@ -198,21 +199,35 @@ const TabsMenuOptions = computed(() => {
   ];
 });
 
-const activeKey = ''
+const activeKey = ref(route.fullPath)
 const baseHome = ''
 const dropdownX = 0
 const dropdownY = 0
+const message = useMessage()
 
-function goPage() {
+
+function goPage(e: RouteItem) {
+  const {fullPath} = e;
+  if (fullPath === route.fullPath) return;
+  activeKey.value = fullPath;
+  router.push({path: fullPath});
+}
+
+function handleContextMenu($event: any, element: RouteItem) {
 
 }
 
-function handleContextMenu() {
-
+// 关闭当前页面
+const removeTab = (route: RouteItem) => {
+  if (tabsList.value.length === 1) {
+    return message.warning('这已经是最后一页，不能再关闭了！');
+  }
 }
 
-function closeTabItem() {
-
+function closeTabItem(e: RouteItem) {
+  const {fullPath} = e;
+  const routeInfo = tabsList.value.find((item) => item.fullPath == fullPath) as RouteItem;
+  removeTab(routeInfo);
 }
 
 function closeHandleSelect() {

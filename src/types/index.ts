@@ -41,7 +41,7 @@ export interface SettingState {
 }
 
 export interface AppState {
-    tabsList: Array<any>
+    tabsList: Array<RouteItem>
 }
 
 export type RouteItem = Partial<RouteLocationNormalized> & {
@@ -58,5 +58,6 @@ export interface Post {
     title: string
     tags?: string[]
     sticky: boolean
+    description?: string
     content?: string
 }
