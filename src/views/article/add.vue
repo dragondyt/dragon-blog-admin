@@ -54,7 +54,8 @@ const showModal = ref(false)
 const loading = ref(false)
 const model = ref<Post>({
   sticky: false,
-  title: ''
+  title: '',
+  id: ''
 })
 
 const rules: FormRules = {

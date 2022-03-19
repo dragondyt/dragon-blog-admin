@@ -34,7 +34,7 @@ const pagination = reactive({
   }
 })
 
-function deleteArticle(id: string | undefined) {
+function deleteArticle(id: string) {
   delArticle(id).then(() => {
     getPage({}).then(d => {
       data.value = d.content
