@@ -135,7 +135,7 @@ const getChangeStyle = computed(() => {
     width: `calc(100% - ${!fixed ? '0px' : lenNum})`,
   };
 });
-const getDarkTheme = () => false
+const getDarkTheme = false
 
 
 // 获取简易的路由对象
