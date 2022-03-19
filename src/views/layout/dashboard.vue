@@ -29,7 +29,7 @@ const pagination = reactive({
   page: 1,
   pageCount: 1,
   pageSize: 10,
-  prefix({itemCount}) {
+  prefix({itemCount}: any) {
     return `总数量： ${itemCount}.`
   }
 })
@@ -132,6 +132,18 @@ const loading = ref(false)
 
 function rowKey(rowData: any) {
   return rowData.title
+}
+
+function handleSorterChange() {
+
+}
+
+function handlePageChange() {
+
+}
+
+function handleFiltersChange() {
+
 }
 
 onMounted(() => {
