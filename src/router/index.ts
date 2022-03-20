@@ -1,5 +1,5 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
-
+import {createRouter, createWebHashHistory} from 'vue-router'
+export const Layout = () => import('@/layout/index.vue')
 const routes = [{
     path: '/',
     redirect: '/login'
@@ -13,6 +13,26 @@ const routes = [{
         path: '/login',
         name: 'Login',
         component: () => import('@/views/login/index.vue')
+    },
+    {
+        path: '/redirect',
+        name: 'Redirect',
+        component: Layout,
+        meta: {
+            title: 'Redirect',
+            hideBreadcrumb: true,
+        },
+        children: [
+            {
+                path: '/redirect/:path(.*)',
+                name: 'RedirectOther',
+                component: () => import('@/views/redirect/index.vue'),
+                meta: {
+                    title: 'Redirect',
+                    hideBreadcrumb: true,
+                },
+            },
+        ],
     }
 ]
 

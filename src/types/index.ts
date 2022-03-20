@@ -61,4 +61,5 @@ export interface Post {
     description?: string
     content?: string
     createdDateTime?: string
+    updateDateTime?: string
 }
