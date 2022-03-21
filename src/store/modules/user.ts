@@ -1,59 +1,75 @@
+import {UserState} from "@/types";
 import {defineStore} from "pinia";
-import {store} from "@/store";
-import {ModelType, UserState} from "@/types";
-import {getUserInfo, login} from "@/api/models/user";
-import {useRouterStore} from "@/store/modules/router";
-import router from '@/router'
-import {ref} from "vue";
-
-export const useUserStore = defineStore({
-    id: 'app-user',
+import { localStorage } from "@/utils/storage";
+import {LoginFormData} from "@/types/api/system/login";
+import { login} from "@/api/login";
+import { getUserInfo } from "@/api/system/user";
+const useUserStore = defineStore({
+    id: "user",
     state: (): UserState => ({
-        // user info
-        userInfo: {},
-        // token
-        token: window.localStorage.getItem('token') || '',
-        language: 'en',
-        // roleList
-        roleList: [],
-        // Whether the login expired
-        sessionTimeout: false,
-        // Last fetch time
-        lastUpdateTime: 0,
+        token: localStorage.get('token') || '',
+        nickname: '',
+        avatar: '',
+        roles: [],
+        perms: []
     }),
     actions: {
-
-        setUserInfo(val: any) {
-            this.userInfo = val
+        async RESET_STATE() {
+            this.$reset()
         },
-
-        async getUserInfo() {
-            const userInfo = await getUserInfo()
-            this.setUserInfo(userInfo)
-            return userInfo
+        getUserInfo(){
+            return new Promise(((resolve, reject) => {
+                    getUserInfo().then(data => {
+                        if (!data) {
+                            return reject('Verification failed, please Login again.')
+                        }
+                        const { nickname, avatar, roles, perms } = data
+                        if (!roles || roles.length <= 0) {
+                            reject('getUserInfo: roles must be a non-null array!')
+                        }
+                        this.nickname = nickname
+                        this.avatar = avatar
+                        this.roles = roles
+                        this.perms = perms
+                        resolve(data)
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            )
         },
-
-        setToken(val: string) {
-            this.token = val
-            window.localStorage.setItem('token', val)
-        },
-
-        async loginIn(loginInfo: ModelType) {
-            const user = await login(loginInfo)
-            this.setUserInfo(user.userInfo)
-            this.setToken(user.token)
-            const routerStore = useRouterStore()
-            await routerStore.setAsyncRouter()
-            const asyncRouters = routerStore.asyncRouters
-            asyncRouters.forEach(asyncRouter => {
-                router.addRoute(asyncRouter)
+        /**
+         * 清除 Token
+         */
+        resetToken() {
+            return new Promise(resolve => {
+                localStorage.remove('token')
+                this.RESET_STATE()
+                resolve(null)
             })
-            router.push({name: 'dashboard'})
+        },
+        login (userInfo: LoginFormData){
+            const { username, password, code, uuid } = userInfo
+            return new Promise((resolve, reject) => {
+                login(
+                    {
+                        username: username.trim(),
+                        password: password,
+                        grant_type: 'captcha',
+                        code: code,
+                        uuid: uuid
+                    }
+                ).then(response => {
+                    const { access_token, token_type } = response
+                    const accessToken = token_type + " " + access_token
+                    localStorage.set("token", accessToken)
+                    this.token = accessToken
+                    resolve(access_token)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
         }
     }
 })
-
-// Need to be used outside the setup
-export function useUserStoreWithOut() {
-    return useUserStore(store);
-}
+export default useUserStore;

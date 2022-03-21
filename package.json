@@ -14,6 +14,7 @@
   "dependencies": {
     "@kangc/v-md-editor": "^2.3.14",
     "@types/js-cookie": "^3.0.1",
+    "@types/path-browserify": "^1.0.0",
     "@vicons/antd": "^0.12.0",
     "@vicons/ionicons5": "^0.12.0",
     "axios": "^0.20.0-0",
@@ -21,8 +22,10 @@
     "js-cookie": "^3.0.1",
     "mitt": "^3.0.0",
     "naive-ui": "^2.26.4",
+    "path-browserify": "^1.0.1",
     "pinia": "^2.0.12",
     "prismjs": "^1.27.0",
+    "unplugin-vue-components": "^0.18.3",
     "vfonts": "^0.0.3",
     "vue": "^3.2.31",
     "vue-request": "^1.2.4",
@@ -31,6 +34,8 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@babylonjs/core": "^4.2.2",
+    "@babylonjs/materials": "^4.2.2",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "@vitejs/plugin-vue": "^2.2.4",

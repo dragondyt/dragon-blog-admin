@@ -7,13 +7,13 @@ declare module "*.vue" {
   export default component;
 }
 
-
+// 环境变量 TypeScript的智能提示
 interface ImportMetaEnv {
-  readonly VITE_APP_TITLE: string
-  readonly VITE_BASE_API: string
-  // 更多环境变量...
+    VITE_APP_TITLE: string,
+    VITE_APP_PORT: string,
+    VITE_APP_BASE_API: string
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+    readonly env: ImportMetaEnv
 }
