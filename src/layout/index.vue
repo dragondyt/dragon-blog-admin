@@ -7,6 +7,7 @@
         :position="fixedMenu"
         @expand="collapsed = false"
         :collapsed="collapsed"
+        :width="leftMenuWidth"
         collapse-mode="width"
         :collapsed-width="64"
         :native-scrollbar="false">
@@ -32,12 +33,15 @@
 <script lang="ts" setup>
 import AsideMenu from "./componets/asideMenu.vue";
 import Logo from "@/layout/componets/logo.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import TagsView from "@/layout/componets/tagsView.vue";
 import NavBar from "@/layout/componets/navBar.vue";
 const collapsed = ref<boolean>(false);
 const fixedMenu = 'absolute'
 const fixedHeader = 'absolute'
+const leftMenuWidth = computed(() => {
+  return collapsed.value ? 64 : 200;
+});
 </script>
 
 <style scoped>
