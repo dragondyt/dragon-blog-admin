@@ -41,8 +41,8 @@
 </template>
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {getArticle, saveArticle} from "@/api/models/article";
-import {Post} from "@/types";
+import {getArticle, saveArticle} from "@/api/article";
+import {Article} from "@/types";
 import * as CRC32 from 'crc-32'
 import {FormInst, FormRules, useMessage} from "naive-ui";
 import {useRoute} from "vue-router";
@@ -52,10 +52,10 @@ const message = useMessage()
 
 const showModal = ref(false)
 const loading = ref(false)
-const model = ref<Post>({
+const model = ref<Article>({
+  id:'',
   sticky: false,
-  title: '',
-  id: ''
+  title: ''
 })
 
 const rules: FormRules = {
@@ -94,9 +94,12 @@ function save() {
 
 const route = useRoute();
 onMounted(() => {
-  getArticle(route.params.id as string).then(a => {
-    model.value = a
-  })
+  if (route.params.id){
+    getArticle(route.params.id as string).then(a => {
+      model.value = a
+    })
+  }
+
 })
 
 </script>

@@ -1,44 +1,72 @@
-import {createRouter, createWebHashHistory} from 'vue-router'
-export const Layout = () => import('@/layout/index.vue')
-const routes = [{
-    path: '/',
-    redirect: '/login'
-},
-    {
-        path: '/init',
-        name: 'Init',
-        component: () => import('@/views/init/index.vue')
-    },
+import {createRouter, createWebHashHistory, RouteRecordRaw} from "vue-router";
+import useStore from "@/store";
+
+const Layout = () => import( '@/layout/index.vue')
+
+export const constantRoutes: Array<RouteRecordRaw> = [
     {
         path: '/login',
-        name: 'Login',
-        component: () => import('@/views/login/index.vue')
+        component: () => import('@/views/login/index.vue'),
+        meta: {hidden: true}
     },
     {
-        path: '/redirect',
-        name: 'Redirect',
+        path: '/',
         component: Layout,
-        meta: {
-            title: 'Redirect',
-            hideBreadcrumb: true,
-        },
+        redirect: '/dashboard',
         children: [
             {
-                path: '/redirect/:path(.*)',
-                name: 'RedirectOther',
-                component: () => import('@/views/redirect/index.vue'),
-                meta: {
-                    title: 'Redirect',
-                    hideBreadcrumb: true,
-                },
-            },
-        ],
+                path: 'dashboard',
+                component: () => import('@/views/dashboard/index.vue'),
+                name: 'Dashboard',
+                meta: {title: 'dashboard', icon: 'dashboard', affix: true}
+            }
+        ]
+    },
+    {
+        path: '/article',
+        name: 'ArticleManagement',
+        component: Layout,
+        redirect: '/list',
+        meta: {title: '文章管理', icon: 'DashboardOutlined'},
+        children: [
+            {
+                path: 'list',
+                name: 'ArticleList',
+                component: () => import('@/views/article/index.vue'),
+                meta: {title: '文章列表', icon: 'DashboardOutlined'}
+            }
+            , {
+                path: 'add',
+                name: 'addArticle',
+                component: () => import('@/views/article/add.vue'),
+                meta: {title: '新增', icon: 'DashboardOutlined'}
+            }
+            , {
+                path: ':id',
+                name: 'editArticle',
+                component: () => import('@/views/article/add.vue'),
+                meta: {hidden: true}
+            }
+        ]
     }
 ]
 
 const router = createRouter({
     history: createWebHashHistory(),
-    routes
+    routes: constantRoutes,
+    // 刷新时，滚动条位置还原
+    scrollBehavior: () => ({left: 0, top: 0})
 })
+
+// 重置路由
+export function resetRouter() {
+    const {permission} = useStore()
+    permission.routes.forEach((route) => {
+        const name = route.name
+        if (name && router.hasRoute(name)) {
+            router.removeRoute(name)
+        }
+    })
+}
 
 export default router
