@@ -162,18 +162,18 @@ const breadcrumbList = computed(() => {
 // 图标列表
 const iconList = [
   {
-    icon: 'SearchOutlined',
+    icon: SearchOutlined,
     tips: '搜索',
   },
   {
-    icon: 'GithubOutlined',
+    icon: GithubOutlined,
     tips: 'github',
     eventObject: {
       click: () => window.open('https://github.com/jekip/naive-ui-admin'),
     },
   },
   {
-    icon: 'LockOutlined',
+    icon: LockOutlined,
     tips: '锁屏',
     eventObject: {
       // click: () => useLockscreen.setLock(true),
