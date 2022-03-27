@@ -7,3 +7,6 @@ export interface Article {
     content?: string
     createdDateTime?: string
 }
+export interface Channel {
+    id:string
+}

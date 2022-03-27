@@ -29,6 +29,12 @@ export const constantRoutes: Array<RouteRecordRaw> = [
         redirect: '/list',
         meta: {title: '文章管理', icon: 'DashboardOutlined'},
         children: [
+             {
+                path: 'add',
+                name: 'addArticle',
+                component: () => import('@/views/article/add.vue'),
+                meta: {title: '新增', icon: 'DashboardOutlined'}
+            },
             {
                 path: 'list',
                 name: 'ArticleList',
@@ -36,10 +42,10 @@ export const constantRoutes: Array<RouteRecordRaw> = [
                 meta: {title: '文章列表', icon: 'DashboardOutlined'}
             }
             , {
-                path: 'add',
-                name: 'addArticle',
-                component: () => import('@/views/article/add.vue'),
-                meta: {title: '新增', icon: 'DashboardOutlined'}
+                path: 'channel',
+                name: 'ChannelManagement',
+                component: () => import('@/views/article/channel.vue'),
+                meta: {title: '渠道管理', icon: 'DashboardOutlined'}
             }
             , {
                 path: ':id',
