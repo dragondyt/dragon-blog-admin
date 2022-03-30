@@ -1,56 +1,87 @@
-import {ConfigEnv, loadEnv, UserConfig} from "vite"
-import vue from "@vitejs/plugin-vue";
-import * as path from "path"
-import viteCompression from "vite-plugin-compression"
-import Components from 'unplugin-vue-components/vite'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-export default ({mode}: ConfigEnv): UserConfig => {
-    // 获取 .env 环境配置文件
-    const env = loadEnv(mode, process.cwd())
-    return {
-        base: "./",
-        plugins: [
-            vue(),
-            Components({
-                resolvers: [NaiveUiResolver()]
-            }),
-            viteCompression({
-                verbose: true,
-                disable: false,
-                threshold: 10240,
-                algorithm: "gzip",
-                ext: ".gz",
-            }),
-        ],
-        resolve: {
-            alias: {
-                "@": path.resolve("./src"),  // @ 代替 src
-            }
-        },
-        //启动服务配置
-        // 本地反向代理解决浏览器跨域限制
-        server: {
-            host: "0.0.0.0",
-            port: Number(env.VITE_APP_PORT),
-            open: true, // 运行自动打开浏览器
-            https:false,
-            proxy: {
-                [env.VITE_APP_BASE_API]: {
-                    target: 'http://localhost:8400',
-                    changeOrigin: true,
-                    rewrite: path => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
-                }
-            }
-        },
-        // 生产环境打包配置
-        //去除 console debugger
-        build: {
-            terserOptions: {
-                compress: {
-                    drop_console: true,
-                    drop_debugger: true,
-                },
-            },
-        },
-    }
+import type { UserConfig, ConfigEnv } from 'vite';
+import { loadEnv } from 'vite';
+import { resolve } from 'path';
+import { wrapperEnv } from './build/utils';
+import { createVitePlugins } from './build/vite/plugin';
+import { OUTPUT_DIR } from './build/constant';
+import { createProxy } from './build/vite/proxy';
+import pkg from './package.json';
+import { format } from 'date-fns';
+const { dependencies, devDependencies, name, version } = pkg;
+
+const __APP_INFO__ = {
+  pkg: { dependencies, devDependencies, name, version },
+  lastBuildTime: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+};
+
+function pathResolve(dir: string) {
+  return resolve(process.cwd(), '.', dir);
 }
+
+export default ({ command, mode }: ConfigEnv): UserConfig => {
+  const root = process.cwd();
+  const env = loadEnv(mode, root);
+  const viteEnv = wrapperEnv(env);
+  const { VITE_PUBLIC_PATH, VITE_DROP_CONSOLE, VITE_PORT, VITE_GLOB_PROD_MOCK, VITE_PROXY } =
+    viteEnv;
+  const prodMock = VITE_GLOB_PROD_MOCK;
+  const isBuild = command === 'build';
+  return {
+    base: VITE_PUBLIC_PATH,
+    esbuild: {},
+    resolve: {
+      alias: [
+        {
+          find: /\/#\//,
+          replacement: pathResolve('types') + '/',
+        },
+        {
+          find: '@',
+          replacement: pathResolve('src') + '/',
+        },
+      ],
+      dedupe: ['vue'],
+    },
+    plugins: createVitePlugins(viteEnv, isBuild, prodMock),
+    define: {
+      __APP_INFO__: JSON.stringify(__APP_INFO__),
+    },
+    css: {
+      preprocessorOptions: {
+        less: {
+          modifyVars: {},
+          javascriptEnabled: true,
+          additionalData: `@import "src/styles/var.less";`,
+        },
+      },
+    },
+    server: {
+      host: true,
+      port: VITE_PORT,
+      proxy: createProxy(VITE_PROXY),
+      // proxy: {
+      //     '/api': {
+      //         target: '',
+      //         changeOrigin: true,
+      //         rewrite: (path) => path.replace(/^\/api/, '/api/v1')
+      //     }
+      // }
+    },
+    optimizeDeps: {
+      include: [],
+      exclude: ['vue-demi'],
+    },
+    build: {
+      target: 'es2015',
+      outDir: OUTPUT_DIR,
+      terserOptions: {
+        compress: {
+          keep_infinity: true,
+          drop_console: VITE_DROP_CONSOLE,
+        },
+      },
+      brotliSize: false,
+      chunkSizeWarningLimit: 2000,
+    },
+  };
+};

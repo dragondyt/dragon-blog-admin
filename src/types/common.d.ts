@@ -1,24 +1,22 @@
-import {VNodeChild} from "vue";
+import { VNodeChild } from 'vue';
 
 export interface BaseResponse<T = any> {
-    message: string;
-    status: number;
-    timestamp: number;
-    data: T;
+  message: string;
+  status: number;
+  timestamp: number;
+  data: T;
 }
 
 export interface Page<T> {
-    content: Array<T>
-    size: number
-    totalElements: number
-    totalPages: number
+  content: Array<T>;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 interface Column<T> {
-    title: string,
-    key: string,
-    render?: (rowData: T, rowIndex: number) => VNodeChild;
+  title: string;
+  key: string;
+  render?: (rowData: T, rowIndex: number) => VNodeChild;
 }
 
-export interface Columns<T> extends Array<Column<T>>{
-
-}
+export type Columns<T> = Array<Column<T>>;
