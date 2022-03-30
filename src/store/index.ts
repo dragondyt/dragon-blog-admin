@@ -1,15 +1,10 @@
-import useUserStore from './modules/user'
-import useAppStore from './modules/app'
-import usePermissionStore from './modules/permission'
-import useSettingStore from './modules/settings'
-import useTagsViewStore from './modules/tagsView'
+import type { App } from 'vue';
+import { createPinia } from 'pinia';
 
-const useStore = () => ({
-    user: useUserStore(),
-    app: useAppStore(),
-    permission: usePermissionStore(),
-    setting: useSettingStore(),
-    tagsView: useTagsViewStore()
-})
+const store = createPinia();
 
-export default useStore
+export function setupStore(app: App<Element>) {
+  app.use(store);
+}
+
+export { store };

@@ -1,3 +1,1 @@
-export default function useAppStore() {
-
-}
+export default function useAppStore() {}
